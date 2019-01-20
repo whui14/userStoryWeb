@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import createHashHistory from 'history/createHashHistory';
-import data from './data.json';
 import './styles.css';
-import Board from 'react-trello';
+import StoryMap from './containers/storyMap/StoryMap';
 import LoginPanel from './containers/login/LoginPanel';
 import RegisterPanel from './containers/register/CreativeRegister';
 const hashHistory = createHashHistory();
@@ -22,7 +21,7 @@ class App extends React.Component {
             <RegisterPanel />
           </Route>
           <Route exact={true} path="/home/:id">
-            <Board data={data} draggable />
+            <StoryMap />
           </Route>
           </Switch>
       </Router>
