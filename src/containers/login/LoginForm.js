@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from "react-router";
-import { Message } from '@alifd/next';
+import { message } from 'antd';
 import AuthForm from './AuthForm';
 
 class LoginFrom extends Component {
@@ -33,11 +33,11 @@ class LoginFrom extends Component {
       .then(response => response.json())
       .then(json =>{
         if(json.code === 0){
-          Message.success('登录成功',1000);
-          history.push(`/home/${json.data}`)
+          message.success('登录成功');
+          history.push(`/home/${json.data.userId}`)
         }
         else {
-          Message.error('用户名或密码错误，请重试',1000);
+          message.error('邮箱或密码错误，请重试');
         }
       })
   };
@@ -45,12 +45,12 @@ class LoginFrom extends Component {
   render() {
     const config = [
       {
-        label: '用户名',
+        label: '邮箱',
         component: 'Input',
         componentProps: {
-          placeholder: '用户名',
+          placeholder: '邮箱',
           size: 'large',
-          maxLength: 20,
+          maxLength: 50,
         },
         formBinderProps: {
           name: 'name',
@@ -102,7 +102,7 @@ class LoginFrom extends Component {
 
     return (
       <AuthForm
-        title="登录"
+        title="用户故事地图登录"
         config={config}
         initFields={initFields}
         formChange={this.formChange}

@@ -1,9 +1,11 @@
 /* eslint react/no-string-refs:0 */
 import React, { Component } from 'react';
-import { Message } from '@alifd/next';
+import { withRouter } from "react-router";
+// import { Message } from '@alifd/next';
+import { message } from 'antd';
 import AuthForm from './AuthForm';
 
-export default class RegisterForm extends Component {
+class RegisterForm extends Component {
   static displayName = 'RegisterForm';
 
   static propTypes = {};
@@ -17,7 +19,7 @@ export default class RegisterForm extends Component {
     };
   }
 
-  checkPasswd = (rule, value, callback) => {
+  checkPassword = (rule, value, callback) => {
     if (!value) {
       callback('请输入正确的密码');
     } else if (value.length < 8) {
@@ -29,10 +31,10 @@ export default class RegisterForm extends Component {
     }
   };
 
-  checkPasswd2 = (rule, value, callback, source) => {
+  checkPassword2 = (rule, value, callback, source) => {
     if (!value) {
       callback('请输入正确的密码');
-    } else if (value && this.state.value.passwd !== source.rePasswd) {
+    } else if (value && this.state.value.password !== source.rePassword) {
       callback('两次输入密码不一致');
     } else {
       callback();
@@ -47,13 +49,31 @@ export default class RegisterForm extends Component {
   };
 
   handleSubmit = (errors, values) => {
+    const { match, location, history } = this.props;
     if (errors) {
       console.log('errors', errors);
       return;
     }
     console.log('values:', values);
-    Message.success('注册成功');
-    // 注册成功后做对应的逻辑处理
+    var getInformation ={
+      method:"POST",
+      headers:{
+      "Content-Type":"application/json"
+      },
+      /* json格式转换 */
+      body:JSON.stringify({email:values.email,password:values.password,registerCode:null,username:values.name})
+      }
+      fetch("http://119.23.29.56:2228/user/register",getInformation)
+      .then(response => response.json())
+      .then(json =>{
+        if(json.code === 0){
+          message.success('注册成功');
+          history.push(`/home/${json.data.userId}`)
+        }
+        else {
+          message.error('注册失败，请重试');
+        }
+      })
   };
 
   render() {
@@ -95,10 +115,10 @@ export default class RegisterForm extends Component {
           htmlType: 'password',
         },
         formBinderProps: {
-          name: 'passwd',
+          name: 'password',
           required: true,
           validator(rule, value, callback, source) {
-            self.checkPasswd(rule, value, callback, source);
+            self.checkPassword(rule, value, callback, source);
           },
         },
       },
@@ -111,10 +131,10 @@ export default class RegisterForm extends Component {
           htmlType: 'password',
         },
         formBinderProps: {
-          name: 'rePasswd',
+          name: 'rePassword',
           required: true,
           validator(rule, value, callback, source) {
-            self.checkPasswd2(rule, value, callback, source);
+            self.checkPassword2(rule, value, callback, source);
           },
         },
       },
@@ -131,19 +151,19 @@ export default class RegisterForm extends Component {
     const initFields = {
       name: '',
       email: '',
-      passwd: '',
-      rePasswd: '',
+      password: '',
+      rePassword: '',
     };
 
     const links = [
       { to: '/', text: '已有账号' },
-      { to: '/forgetpassword', text: '找回密码' },
+      // { to: '/forgetpassword', text: '找回密码' },
     ];
 
     return (
       <div className="user-register">
         <AuthForm
-          title="注册"
+          title="用户故事地图注册"
           config={config}
           initFields={initFields}
           links={links}
@@ -154,3 +174,4 @@ export default class RegisterForm extends Component {
     );
   }
 }
+export default withRouter(RegisterForm);

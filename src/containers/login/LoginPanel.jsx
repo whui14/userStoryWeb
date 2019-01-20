@@ -42,10 +42,10 @@ const styles = {
     padding: '0',
   },
   content: {
+    backgroundImage: `url(${require('../../images/bg.jpg')})`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
-    background: '#fff',
   },
 };

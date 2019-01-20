@@ -147,7 +147,7 @@ const styles = {
   formTitle: {
     marginBottom: '40px',
     fontWeight: '500',
-    fontSize: '22px',
+    fontSize: '32px',
     textAlign: 'center',
     letterSpacing: '4px',
   },
@@ -169,7 +169,7 @@ const styles = {
     color: '#999',
   },
   link: {
-    color: '#999',
+    color: '#fff',
     fontSize: '12px',
     margin: '0 5px',
   },

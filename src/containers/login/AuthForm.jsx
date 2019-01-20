@@ -156,6 +156,7 @@ const styles = {
   },
   formItem: {
     marginBottom: '20px',
+    fontSize: '12px',
   },
   submitButton: {
     justifyContent: 'center',
@@ -172,7 +173,7 @@ const styles = {
     color: '#999',
   },
   link: {
-    color: '#999',
+    color: '#fff',
     fontSize: '12px',
     margin: '0 5px',
   },

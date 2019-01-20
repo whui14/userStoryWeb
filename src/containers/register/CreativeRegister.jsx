@@ -14,9 +14,9 @@ export default class CreativeRegister extends Component {
     return (
       <div style={styles.container}>
         <Row wrap>
-          <Col l="12">
+          {/* <Col l="12">
             <RegisterIntro />
-          </Col>
+          </Col> */}
           <Col l="12">
             <div style={styles.content}>
               <RegisterForm />
