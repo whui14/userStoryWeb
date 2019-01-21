@@ -12,7 +12,8 @@
     "react-dom": "^16.2.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-trello": "^2.0.9"
+    "react-trello": "^2.0.9",
+    "src": "^1.1.2"
   },
   "devDependencies": {
     "atool-build": "^0.9.0",
