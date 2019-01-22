@@ -21,16 +21,32 @@ export default class StoryMap extends Component {
     onCardClick= (e) => {
         console.log('click',e)
     }
+    handleLaneDragEnd = (laneId, newPosition, payload) => {
+        console.log('lanedrag',laneId, newPosition, payload)
+    }
+    handleDragEnd = (cardId, sourceLaneId, targetLaneId, position, cardDetails) => {
+        console.log('drag',cardId, sourceLaneId, targetLaneId, position, cardDetails)
+    }
     render(){
         return (
-            <Board data={data} 
-            onDataChange={this.onDataChange}
-            onCardDelete={this.onCardDelete}
-            onCardAdd={this.onCardAdd}
-            onCardClick={this.onCardClick}
-            editable
-            draggable
-            />
+            <Board data={data} customCardLayout
+                onDataChange={this.onDataChange}
+                onCardDelete={this.onCardDelete}
+                onCardAdd={this.onCardAdd}
+                onCardClick={this.onCardClick}
+                handleLaneDragEnd={this.handleLaneDragEnd}
+                handleDragEnd={this.handleDragEnd}
+                canAddLanes
+                editable
+                draggable>
+                <StoryCard cardColor='#eee' 
+                name='笑话'
+                dueOn='nizaigansha'
+                subTitle='xiao'
+                body='说点啥'
+                escalationText='这是啥'
+                />
+            </Board>
         )
     }
 }

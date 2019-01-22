@@ -3,7 +3,9 @@ import Board from 'react-trello';
 
 
 export default class StoryCard extends Component {
+
     render(){
+        const { cardColor,name, dueOn,subTitle,body,escalationText } = this.props
         return (
             <div>
                 <header
@@ -14,18 +16,18 @@ export default class StoryCard extends Component {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    color: props.cardColor
+                    color: cardColor
                     }}>
-                    <div style={{fontSize: 14, fontWeight: 'bold'}}>{props.name}</div>
-                    <div style={{fontSize: 11}}>{props.dueOn}</div>
+                    <div style={{fontSize: 14, fontWeight: 'bold'}}>{name}</div>
+                    <div style={{fontSize: 11}}>{dueOn}</div>
                 </header>
                 <div style={{fontSize: 12, color: '#BD3B36'}}>
-                    <div style={{color: '#4C4C4C', fontWeight: 'bold'}}>{props.subTitle}</div>
+                    <div style={{color: '#4C4C4C', fontWeight: 'bold'}}>{subTitle}</div>
                     <div style={{padding: '5px 0px'}}>
-                    <i>{props.body}</i>
+                    <i>{body}</i>
                     </div>
-                    <div style={{marginTop: 10, textAlign: 'center', color: props.cardColor, fontSize: 15, fontWeight: 'bold'}}>
-                    {props.escalationText}
+                    <div style={{marginTop: 10, textAlign: 'center', color: cardColor, fontSize: 15, fontWeight: 'bold'}}>
+                    {escalationText}
                     </div>
                 </div>
             </div>
