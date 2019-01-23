@@ -1,21 +1,24 @@
 import API from '../utils/API'
 import messageHandler from '../utils/messageHandler'
 export const SET_BASIC = 'SET_BASIC'
-export const setUserInfo = (basicInfo) => (dispatch) => {
+export const setUserInfo = (user) => (dispatch) => {
+  console.log(user)
   return Promise.resolve().then(() => {
-    localStorage.setItem('userid', basicInfo.id)
+    localStorage.setItem('token', user.token)
+    localStorage.setItem('userId', user.userId)
     dispatch({
       type: SET_BASIC,
-      payload: basicInfo,
+      payload: user,
     })
   })
 }
 
 export const LOGOUT = 'LOGOUT'
-export const logout = () => (dispatch) => {
-  API.query('/account/logout', {
+export const logout = (token) => (dispatch) => {
+  API.query('/user/logout', {
+    token: token,
     options: {
-      method: 'POST'
+      method: 'POST',
     }
   }).then(messageHandler).then((json) => {
     if (json.code === 0) {

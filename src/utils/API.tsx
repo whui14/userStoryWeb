@@ -6,12 +6,11 @@ interface paramProps {
   options?: {
     method?: string, // GET / POST, default GET
     body?: any, // POST
-    headers?: any, 
+    headers?: any,
   }
 }
 
-// const serverOrigin = 'http://192.168.31.139:8181'
-export const serverOrigin = 'http://119.29.157.178:8181' // 线上地址
+export const serverOrigin = 'http://119.23.29.56:2228' // 线上地址
 
 const query = (url, params: paramProps) => {
   const { searchParams, options } = params
@@ -28,11 +27,12 @@ const query = (url, params: paramProps) => {
   }, url) : url
   if (options && options.method === 'POST') {
     // POST 请求
-    return fetch(serverOrigin + realUrl, { 
+    return fetch(serverOrigin + realUrl, {
       method: 'POST',
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
       ...options
     }).then((res) => res.json()).then((res) => {

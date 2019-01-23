@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import { withRouter } from "react-router";
 import { message } from 'antd';
+import { fromJS } from 'immutable'
 import AuthForm from './AuthForm';
-
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { pushURL } from '../../actions/route'
+import {
+  setUserInfo,
+} from '../../actions/auth'
 class LoginFrom extends Component {
   static displayName = 'LoginFrom';
 
@@ -33,8 +39,9 @@ class LoginFrom extends Component {
       .then(response => response.json())
       .then(json =>{
         if(json.code === 0){
-          message.success('登录成功');
-          history.push(`/home/${json.data.userId}/${json.data.token}`)
+          this.props.setUserInfo(json.data)
+          message.success('登录成功')
+          history.push(`/home`)
         }
         else {
           message.error('邮箱或密码错误，请重试');
@@ -112,4 +119,16 @@ class LoginFrom extends Component {
     );
   }
 }
-export default withRouter(LoginFrom);
+function mapStateToProps(state) {
+  return {
+    route: fromJS(state).get('route')
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    setUserInfo: bindActionCreators(setUserInfo, dispatch),
+    pushURL: bindActionCreators(pushURL, dispatch)
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(LoginFrom))
