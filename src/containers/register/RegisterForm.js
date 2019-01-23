@@ -68,7 +68,7 @@ class RegisterForm extends Component {
       .then(json =>{
         if(json.code === 0){
           message.success('注册成功');
-          history.push(`/home/${json.data.userId}`)
+          history.push(`/home/${json.data.userId}/${json.data.token}`)
         }
         else {
           message.error('注册失败，请重试');

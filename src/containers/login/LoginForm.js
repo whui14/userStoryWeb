@@ -34,7 +34,7 @@ class LoginFrom extends Component {
       .then(json =>{
         if(json.code === 0){
           message.success('登录成功');
-          history.push(`/home/${json.data.userId}`)
+          history.push(`/home/${json.data.userId}/${json.data.token}`)
         }
         else {
           message.error('邮箱或密码错误，请重试');

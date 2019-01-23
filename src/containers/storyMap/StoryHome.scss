@@ -1,0 +1,30 @@
+:local(.homeContainer){
+  height: 100%;
+  :local(.homeTop){
+    padding: 8px 15px;
+    background:#F4F5F6;
+    display: flex;
+    justify-content: space-between;
+    :local(.homeAddBtn){
+      color: #f5222d;
+    }
+    :local(.homeLogoutSvg){
+      width: 20px;
+      height: 20px;
+      position: relative;
+      top: 5px;
+    }
+    :local(.homeLogoutBtn){
+      margin-left: 10px;
+      color: #926dea;
+    }
+  }
+  :local(.homeNoContent){
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+}
