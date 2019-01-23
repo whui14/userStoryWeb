@@ -69,6 +69,10 @@ class StoryHome extends Component {
             }
           })
       }
+      handleEnterDetail = (id) => {
+        const { history } = this.props
+        history.push(`/home/card/${id}`)
+      }
       render(){
         const { match, location, user, pushURL, logout } = this.props
         const { mapList, showAddModal } = this.state
@@ -90,11 +94,12 @@ class StoryHome extends Component {
 
               </div>
               {mapList.length > 0 ?
-              <div className={styles.homeContent}>
+              <div className={styles.homeContentDetail}>
                 {mapList.map((m, index) => {
                   return(
-                    <div className={styles.homeContentItem} key={index}>
-                      这里是一个个story
+                    <div className={styles.homeContentItem} key={index} onClick={() => this.handleEnterDetail(m.id)}>
+                      <span className={styles.homeContentItemName}>{m.name}</span>
+                      <span className={styles.homeContentItemState}>{m.state === 0 ? '进行中' : '已结束'}</span>
                     </div>
                   )
                 })
