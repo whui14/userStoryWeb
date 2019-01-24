@@ -1,0 +1,15 @@
+:local(.cardContainer){
+  :local(.cardHeader){
+    border-bottom: 1px solid #eee;
+    padding: 6px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: aliceblue;
+  }
+  :local(.cardContent){
+    font-size: 12px;
+    background: aliceblue;
+    padding: 6px;
+  }
+}

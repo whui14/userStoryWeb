@@ -3,13 +3,13 @@ import styles from './StoryHome.scss'
 import { fromJS } from 'immutable'
 import { withRouter } from 'react-router'
 import { message, Button } from 'antd'
-import { PandaSvg } from '../../images/svg'
+import { PandaSvg, EditNameIcon, DeleteIcon } from '../../images/svg'
 import { pushURL } from '../../actions/route'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import API from '../../utils/API.tsx'
 import messageHandler from '../../utils/messageHandler'
-
+import DeleteStoryModal from './DeleteStoryModal'
 import AddStoryModal from './AddStoryModal'
 import {
   setUserInfo,
@@ -23,6 +23,8 @@ class StoryHome extends Component {
           userId: localStorage.getItem('userId'),
           token: localStorage.getItem('token'),
           showAddModal: false, //添加故事地图
+          showDeleteModal: false, //删除故事地图
+          mapStory: null, //选中的故事
         };
       }
       componentDidMount(){
@@ -75,8 +77,7 @@ class StoryHome extends Component {
       }
       render(){
         const { match, location, user, pushURL, logout } = this.props
-        const { mapList, showAddModal } = this.state
-          console.log(mapList)
+        const { mapList, showAddModal, showDeleteModal, mapStory } = this.state
           return (
             <div className={styles.homeContainer}>
               <div className={styles.homeTop}>
@@ -97,11 +98,14 @@ class StoryHome extends Component {
               <div className={styles.homeContentDetail}>
                 {mapList.map((m, index) => {
                   return(
-                    <div className={styles.homeContentItem} key={index} onClick={() => this.handleEnterDetail(m.id)}>
+                    <div className={styles.homeContentItem} key={index}>
                       <div className={styles.homeContentItemFlex}>
-                        <span className={styles.homeContentItemName}>{m.name}</span>
+                        <span className={styles.homeContentItemName}>{m.name}<EditNameIcon onClick={() => this.setState({ showAddModal: true, mapStory: m })} style={{ display: m.state !== 0 && 'none' }}/>
+                        </span>
                         <span className={styles.homeContentItemState}>{m.state === 0 ? '进行中' : '已结束'}</span>
                       </div>
+                      <DeleteIcon className={styles.homeContentItemDelete} onClick={() => this.setState({ showDeleteModal: true, mapStory: m })} style={{ display: m.state !== 0 && 'none' }}/>
+                      <div className={styles.homeContentItemEnter} onClick={() => this.handleEnterDetail(m.id)}/>
                     </div>
                   )
                 })
@@ -114,7 +118,11 @@ class StoryHome extends Component {
             }
             {
               showAddModal &&
-              <AddStoryModal onCancel={() => this.setState({ showAddModal: false })} fetchStoryList={this.fetchStoryList}/>
+              <AddStoryModal onCancel={() => this.setState({ showAddModal: false, mapStory: null })} fetchStoryList={this.fetchStoryList} mapStory={mapStory}/>
+            }
+            {
+              showDeleteModal &&
+              <DeleteStoryModal onCancel={() => this.setState({ showDeleteModal: false, mapStory: null })} fetchStoryList={this.fetchStoryList} mapStory={mapStory}/>
             }
             </div>
           )

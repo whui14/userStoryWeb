@@ -10,11 +10,13 @@ class AddStoryModal extends Component {
       };
     }
   handleOk = () => {
+    const { mapStory } = this.props
     const { validateFields } = this.props.form
     validateFields((err, value) => {
       if (err) {
         return
       }
+      let body = mapStory ? JSON.stringify({ mapId: mapStory.id, name: value.name }) : JSON.stringify({ name: value.name })
       var getInformation ={
         method:"POST",
         headers:{
@@ -22,26 +24,44 @@ class AddStoryModal extends Component {
         userId: this.state.userId,
         token: this.state.token,
         },
-        body: JSON.stringify({ name: value.name })
+        body,
         }
-        fetch("http://119.23.29.56:2228/map/create",getInformation)
-        .then(response => response.json())
-        .then(json =>{
-          if(json.code === 0){
-            message.success('添加成功');
-            this.props.fetchStoryList()
-            this.props.onCancel()
-          }
-          else {
-            message.error(json.data);
-          }
-        })
+        if(mapStory){
+          fetch("http://119.23.29.56:2228/map/modify_name",getInformation)
+          .then(response => response.json())
+          .then(json =>{
+            if(json.code === 0){
+              message.success('编辑成功');
+              this.props.fetchStoryList()
+              this.props.onCancel()
+            }
+            else {
+              message.error(json.data);
+            }
+          })
+        }
+        else {
+          fetch("http://119.23.29.56:2228/map/create",getInformation)
+          .then(response => response.json())
+          .then(json =>{
+            if(json.code === 0){
+              message.success('添加成功');
+              this.props.fetchStoryList()
+              this.props.onCancel()
+            }
+            else {
+              message.error(json.data);
+            }
+          })
+        }
+
     })
   }
   handleCancel = () => {
     this.props.onCancel()
   }
   render(){
+    const { mapStory } = this.props
     const { getFieldDecorator } = this.props.form
     const formItemLayout = {
       labelCol: {
@@ -54,7 +74,7 @@ class AddStoryModal extends Component {
     return(
       <Modal
         visible
-        title="添加故事地图"
+        title={mapStory ? '编辑故事地图' : '添加故事地图'}
         okText='确定'
         cancelText='取消'
         onOk={() => this.handleOk()}
@@ -63,6 +83,7 @@ class AddStoryModal extends Component {
         <Form>
           <FormItem {...formItemLayout} label="故事名称">
             {getFieldDecorator('name', {
+              initialValue: mapStory ? mapStory.name : '',
               rules: [{
                 required: true,
                 message: '请输入故事名称'

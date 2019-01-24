@@ -19,6 +19,20 @@
       color: #926dea;
     }
   }
+  :local(.homeContent){
+    :local(.homeContentTop){
+      display: flex;
+      :local(.homeContentAddCol){
+        margin: 10px;
+        margin-left: 0px;
+        color: #926dea;
+      }
+    }
+    :local(.homeContentAddRow){
+      margin: 10px;
+      color: #7CB2F1;
+    }
+  }
   :local(.homeNoContent){
     display: flex;
     align-items: center;
