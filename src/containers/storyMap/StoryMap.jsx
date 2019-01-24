@@ -16,14 +16,14 @@ import {
   setUserInfo,
   logout,
 } from '../../actions/auth'
+import AddCardModal from './AddCardModal.jsx';
 class StoryMap extends Component {
     constructor(props) {
         super(props);
         this.state = {
           userId: localStorage.getItem('userId'),
           token: localStorage.getItem('token'),
-          addColModal: false,
-          addRowModal: false,
+          addCardModal: null, //1是列表，2是泳道
         };
       }
       componentDidMount(){
@@ -92,6 +92,7 @@ class StoryMap extends Component {
       }
       render(){
           const { history } = this.props
+          const { addCardModal } = this.state
           return (
             <div className={styles.storyContainer}>
               <div className={styles.homeTop}>
@@ -130,10 +131,19 @@ class StoryMap extends Component {
                       escalationText='这是啥'
                       />
                   </Board>
-                  <Button className={styles.homeContentAddCol} onClick={() => this.setState({ addColModal: true })}>+ 添加列表</Button>
+                  <Button className={styles.homeContentAddCol} onClick={() => this.setState({ addCardModal: 1 })}>+ 添加列表</Button>
                 </div>
-                <Button className={styles.homeContentAddRow} onClick={() => this.setState({ addRowModal: true })}>+ 添加泳道</Button>
+                <Button className={styles.homeContentAddRow} onClick={() => this.setState({ addCardModal: 2 })}>+ 添加泳道</Button>
               </div>
+              {
+                addCardModal &&
+                <AddCardModal 
+                  type={addCardModal} 
+                  onCancel={() => this.setState({ addCardModal: null })} 
+                  fetchMapList={this.fetchMapList}
+                  mapId={this.props.match.params.id}
+                  />
+              }
             </div>
           )
       }
