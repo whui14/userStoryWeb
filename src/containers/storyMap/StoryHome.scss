@@ -22,21 +22,28 @@
   :local(.homeContentDetail){
     padding: 7px 15px;
     :local(.homeContentItem){
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      border: 1px solid #7CB2F1;
-      width: 150px;
-      height: 100px;
-      padding: 10px;
-      :local(.homeContentItemName){
-        font-size: 14px;
-        color: #4a4a4a;
-        max-width: 100px;
-      }
-      :local(.homeContentItemState){
-        font-size: 12px;
-        color: #445548;
+      display: inline-block;
+      background-color: aliceblue;
+      margin-right: 15px;
+      border-radius: 8px;
+      :local(.homeContentItemFlex){
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        border: 1px solid #7CB2F1;
+        border-radius: 8px;
+        width: 150px;
+        height: 100px;
+        padding: 10px;
+        :local(.homeContentItemName){
+          font-size: 16px;
+          color: #4a4a4a;
+          max-width: 100px;
+        }
+        :local(.homeContentItemState){
+          font-size: 12px;
+          color: #F5A623;
+        }
       }
     }
   }

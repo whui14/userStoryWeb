@@ -98,8 +98,10 @@ class StoryHome extends Component {
                 {mapList.map((m, index) => {
                   return(
                     <div className={styles.homeContentItem} key={index} onClick={() => this.handleEnterDetail(m.id)}>
-                      <span className={styles.homeContentItemName}>{m.name}</span>
-                      <span className={styles.homeContentItemState}>{m.state === 0 ? '进行中' : '已结束'}</span>
+                      <div className={styles.homeContentItemFlex}>
+                        <span className={styles.homeContentItemName}>{m.name}</span>
+                        <span className={styles.homeContentItemState}>{m.state === 0 ? '进行中' : '已结束'}</span>
+                      </div>
                     </div>
                   )
                 })
