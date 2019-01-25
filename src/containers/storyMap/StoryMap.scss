@@ -22,9 +22,79 @@
   :local(.homeContent){
     :local(.homeContentTop){
       display: flex;
+      :local(.homeCard){
+        background: #F4F5F6;
+        border: 1px solid #eee;
+        margin: 10px;
+        padding: 20px 15px;
+        border-radius: 5px;
+        :local(.homeCardTitle){
+          font-size: 16px;
+          padding-bottom: 8px;
+          svg {
+            cursor: pointer;
+            height: 12px;
+            width: 12px;
+            margin-left: 5px;
+            fill: #ccc;
+            &:hover{
+              fill: #926dea;
+            }
+          }
+        }
+        :local(.homeCardItem){
+          background: aliceblue;
+          border: 1px solid #eee;
+          padding: 8px 12px;
+          width: 250px;
+          height: 100px;
+          margin-bottom: 8px;
+          :local(.homeCardItemTitle){
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            height: 35px;
+            border-bottom: 1.5px dashed #fff;
+            :local(.defaultValue){
+              cursor: pointer;
+              padding: 0px 3px;
+              height: 25px;
+              background: #FFFFFF;
+              border-radius:100px;
+              border:1px solid #D8D8D8;
+              display: inline-block;
+              > span {
+                display: inline-block;
+                font-size: 12px;
+              }
+              :local(.dot) {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                margin-right: 4px;
+              }
+            }
+            svg {
+              cursor: pointer;
+              height: 12px;
+              width: 12px;
+              margin-left: 5px;
+              fill: #ccc;
+              &:hover{
+                fill: #926dea;
+              }
+            }
+          }
+          :local(.homeCardItemContent){
+            font-size: 12px;
+            padding: 5px 0px;
+          }
+        }
+      }
       :local(.homeContentAddCol){
         margin: 10px;
-        margin-left: 0px;
+        // margin-left: 0px;
         color: #926dea;
       }
     }
@@ -40,5 +110,22 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+  }
+}
+:local(.selector){
+  display: flex;
+  :local(.defaultValue){
+    cursor: pointer;
+    > span {
+      display: inline-block;
+      font-size: 12px;
+    }
+    :local(.dot) {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
   }
 }

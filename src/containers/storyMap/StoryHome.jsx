@@ -102,9 +102,9 @@ class StoryHome extends Component {
                       <div className={styles.homeContentItemFlex}>
                         <span className={styles.homeContentItemName}>{m.name}<EditNameIcon onClick={() => this.setState({ showAddModal: true, mapStory: m })} style={{ display: m.state !== 0 && 'none' }}/>
                         </span>
-                        <span className={styles.homeContentItemState}>{m.state === 0 ? '进行中' : '已结束'}</span>
+                        <span className={styles.homeContentItemState} style={{ color: m.state === 0 ? '#66B966' : '#F45B6C' }}>{m.state === 0 ? '进行中' : '已结束'}</span>
                       </div>
-                      <DeleteIcon className={styles.homeContentItemDelete} onClick={() => this.setState({ showDeleteModal: true, mapStory: m })} style={{ display: m.state !== 0 && 'none' }}/>
+                      <DeleteIcon className={styles.homeContentItemDelete} onClick={() => this.setState({ showDeleteModal: true, mapStory: m })}/>
                       <div className={styles.homeContentItemEnter} onClick={() => this.handleEnterDetail(m.id)}/>
                     </div>
                   )
