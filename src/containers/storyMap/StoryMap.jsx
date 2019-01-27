@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import data from './data.json';
 import StoryCard from './StoryCard';
-import Board from 'react-trello';
 import styles from './StoryMap.scss'
 import { PandaSvg, EditNameIcon } from '../../images/svg'
 import { fromJS } from 'immutable'

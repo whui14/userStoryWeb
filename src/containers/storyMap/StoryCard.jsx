@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Board from 'react-trello';
 import styles from './StoryCard.scss'
 import { EditNameIcon } from '../../images/svg'
 
