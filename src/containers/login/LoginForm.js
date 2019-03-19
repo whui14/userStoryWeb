@@ -35,7 +35,7 @@ class LoginFrom extends Component {
       /* json格式转换 */
       body:JSON.stringify({email:values.name,password:values.password})
       }
-      fetch("http://119.23.29.56:2228/user/login",getInformation)
+      fetch("http://172.19.240.118:8002/user/login",getInformation)
       .then(response => response.json())
       .then(json =>{
         if(json.code === 0){

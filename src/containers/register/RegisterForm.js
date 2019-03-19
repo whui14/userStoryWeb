@@ -63,7 +63,7 @@ class RegisterForm extends Component {
       /* json格式转换 */
       body:JSON.stringify({email:values.email,password:values.password,registerCode:null,username:values.name})
       }
-      fetch("http://119.23.29.56:2228/user/register",getInformation)
+      fetch("http://172.19.240.118:8002/user/register",getInformation)
       .then(response => response.json())
       .then(json =>{
         if(json.code === 0){

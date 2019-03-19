@@ -10,7 +10,8 @@ interface paramProps {
   }
 }
 
-export const serverOrigin = 'http://119.23.29.56:2228' // 线上地址
+// export const serverOrigin = 'http://119.23.29.56:2228' // 线上地址
+export const serverOrigin = 'http://172.19.240.118:8002' // 本地地址
 
 const query = (url, params: paramProps) => {
   const { searchParams, options } = params

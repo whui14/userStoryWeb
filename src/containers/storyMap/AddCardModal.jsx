@@ -31,7 +31,7 @@ class AddCardModal extends Component {
         }
         //添加列表
         if(type === 1){
-          fetch("http://119.23.29.56:2228/card/create_list",getInformation)
+          fetch("http://172.19.240.118:8002/card/create_list",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
@@ -45,7 +45,7 @@ class AddCardModal extends Component {
           })
         }
         else {
-          fetch("http://119.23.29.56:2228/card/create_lane",getInformation)
+          fetch("http://172.19.240.118:8002/card/create_lane",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){

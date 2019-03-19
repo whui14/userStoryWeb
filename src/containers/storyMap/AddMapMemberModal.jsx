@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { message, Button,Modal,Form,Input } from 'antd'
 const FormItem = Form.Item
-class AddStoryModal extends Component {
+class AddMapMemberModal extends Component {
   constructor(props) {
       super(props);
       this.state = {
@@ -10,15 +10,12 @@ class AddStoryModal extends Component {
       };
     }
   handleOk = () => {
-    const { mapStory } = this.props
+    const { mapId } = this.props
     const { validateFields } = this.props.form
     validateFields((err, value) => {
       if (err) {
         return
       }
-      console.log('???')
-      
-      let body = mapStory ? JSON.stringify({ mapId: mapStory.id, name: value.name }) : JSON.stringify({ name: value.name })
       var getInformation ={
         method:"POST",
         headers:{
@@ -26,38 +23,24 @@ class AddStoryModal extends Component {
         userId: this.state.userId,
         token: this.state.token,
         },
-        body,
+        body: JSON.stringify({
+            beOperatedEmail: value.email,
+            mapId,
+            operatorId: this.state.userId,
+        }),
         }
-        if(mapStory){
-          console.log('编辑了啊');
-          
-          fetch("http://172.19.240.118:8002/map/modify_name",getInformation)
+          fetch("http://172.19.240.118:8002/member/add_member",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
-              message.success('编辑成功');
-              this.props.fetchStoryList()
+              message.success('添加成员成功');
+              this.props.onRefersh()
               this.props.onCancel()
             }
             else {
               message.error(json.data);
             }
           })
-        }
-        else {
-          fetch("http://172.19.240.118:8002/map/create",getInformation)
-          .then(response => response.json())
-          .then(json =>{
-            if(json.code === 0){
-              message.success('添加成功');
-              this.props.fetchStoryList()
-              this.props.onCancel()
-            }
-            else {
-              message.error(json.data);
-            }
-          })
-        }
 
     })
   }
@@ -65,7 +48,6 @@ class AddStoryModal extends Component {
     this.props.onCancel()
   }
   render(){
-    const { mapStory } = this.props
     const { getFieldDecorator } = this.props.form
     const formItemLayout = {
       labelCol: {
@@ -78,25 +60,25 @@ class AddStoryModal extends Component {
     return(
       <Modal
         visible
-        title={mapStory ? '编辑故事地图' : '添加故事地图'}
+        title={'添加地图成员'}
         okText='确定'
         cancelText='取消'
         onOk={() => this.handleOk()}
         onCancel={() => this.handleCancel()}
       >
         <Form>
-          <FormItem {...formItemLayout} label="故事名称">
-            {getFieldDecorator('name', {
-              initialValue: mapStory ? mapStory.name : '',
+          <FormItem {...formItemLayout} label={'成员邮箱'}>
+            {getFieldDecorator('email', {
               rules: [{
                 required: true,
-                message: '请输入故事名称'
+                message: '邮箱不能为空'
               },{
-                max: 16,
-                message: '名称不能超过16位'
-              }]
+                required: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
+                message: '请输入正确的邮箱号'
+              }
+            ]
             })(
-              <Input placeholder="请输入故事名称" />
+              <Input placeholder="请输入成员邮箱" />
             )}
           </FormItem>
         </Form>
@@ -105,4 +87,4 @@ class AddStoryModal extends Component {
   }
 }
 
-export default Form.create()(AddStoryModal)
+export default Form.create()(AddMapMemberModal)

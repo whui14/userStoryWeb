@@ -1,20 +1,22 @@
-import React, { Component } from 'react'
-import styles from './StoryHome.scss'
-import { fromJS } from 'immutable'
-import { withRouter } from 'react-router'
-import { message, Button } from 'antd'
-import { PandaSvg, EditNameIcon, DeleteIcon } from '../../images/svg'
-import { pushURL } from '../../actions/route'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import API from '../../utils/API.tsx'
-import messageHandler from '../../utils/messageHandler'
-import DeleteStoryModal from './DeleteStoryModal'
-import AddStoryModal from './AddStoryModal'
+import React, { Component } from 'react';
+import styles from './StoryHome.scss';
+import { fromJS } from 'immutable';
+import { withRouter } from 'react-router';
+import { message, Button, Popover } from 'antd';
+import { PandaSvg, EditNameIcon, DeleteIcon } from '../../images/svg';
+import { pushURL } from '../../actions/route';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import API from '../../utils/API.tsx';
+import messageHandler from '../../utils/messageHandler';
+import DeleteStoryModal from './DeleteStoryModal';
+import AddStoryModal from './AddStoryModal';
 import {
   setUserInfo,
   logout,
-} from '../../actions/auth'
+} from '../../actions/auth';
+import ChangePasswordModal from '../login/ChangePasswordModal';
+import { throws } from 'assert';
 class StoryHome extends Component {
     constructor(props) {
         super(props);
@@ -25,6 +27,8 @@ class StoryHome extends Component {
           showAddModal: false, //添加故事地图
           showDeleteModal: false, //删除故事地图
           mapStory: null, //选中的故事
+          showChangePsw: false, //修改密码
+          hovered: false,
         };
       }
       componentDidMount(){
@@ -39,7 +43,7 @@ class StoryHome extends Component {
           token: this.state.token,
           },
           }
-          fetch("http://119.23.29.56:2228/map/list",getInformation)
+          fetch("http://172.19.240.118:8002/map/list",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
@@ -59,7 +63,7 @@ class StoryHome extends Component {
           token: this.state.token,
           },
           }
-          fetch("http://119.23.29.56:2228/user/logout",getInformation)
+          fetch("http://172.19.240.118:8002/user/logout",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
@@ -75,10 +79,23 @@ class StoryHome extends Component {
         const { history } = this.props
         history.push(`/home/card/${id}`)
       }
+      handleHoverChange = () => {
+        this.setState({ hovered: !this.state.hovered })
+      }
       render(){
         const { match, location, user, pushURL, logout } = this.props
-        const { mapList, showAddModal, showDeleteModal, mapStory } = this.state
-          return (
+        const { mapList, showAddModal, showDeleteModal, mapStory, showChangePsw } = this.state
+        const content = (
+          <React.Fragment>
+            <span className={styles.homeLogoutBtn} onClick={() => this.setState({ hovered: false ,showChangePsw: true })}>
+              修改密码
+            </span>
+            <span className={styles.homeLogoutBtn} onClick={() => {this.setState({ hovered: false });this.logoutUser()}}>
+              退出登录
+            </span>
+          </React.Fragment>
+        )
+        return (
             <div className={styles.homeContainer}>
               <div className={styles.homeTop}>
                 <div>
@@ -87,10 +104,12 @@ class StoryHome extends Component {
                   </Button>
                 </div>
                 <div>
-                  <PandaSvg className={styles.homeLogoutSvg}/>
-                  <Button className={styles.homeLogoutBtn} onClick={() => this.logoutUser()}>
-                    退出登录
-                  </Button>
+                  {/* <PandaSvg className={styles.homeLogoutSvg}/> */}
+                  <Popover placement="bottom" content={content} trigger="click" visible={this.state.hovered}
+                    onVisibleChange={this.handleHoverChange}
+                  >
+                    <Button>用户操作</Button>
+                  </Popover>
                 </div>
 
               </div>
@@ -123,6 +142,12 @@ class StoryHome extends Component {
             {
               showDeleteModal &&
               <DeleteStoryModal onCancel={() => this.setState({ showDeleteModal: false, mapStory: null })} fetchStoryList={this.fetchStoryList} mapStory={mapStory}/>
+            }
+            {
+              showChangePsw &&
+              <ChangePasswordModal
+                onCancel={() => this.setState({ showChangePsw: false })}
+              />
             }
             </div>
           )

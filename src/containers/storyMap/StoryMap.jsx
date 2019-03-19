@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
 import data from './data.json';
 import StoryCard from './StoryCard';
-import styles from './StoryMap.scss'
-import { PandaSvg, EditNameIcon } from '../../images/svg'
-import { fromJS } from 'immutable'
-import { withRouter } from 'react-router'
-import { message, Button, Popover, Icon, Tooltip } from 'antd'
-import { pushURL } from '../../actions/route'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import API from '../../utils/API.tsx'
-import messageHandler from '../../utils/messageHandler'
+import styles from './StoryMap.scss';
+import { PandaSvg, EditNameIcon } from '../../images/svg';
+import { fromJS } from 'immutable';
+import { withRouter } from 'react-router';
+import { message, Button, Popover, Icon, Tooltip } from 'antd';
+import { pushURL } from '../../actions/route';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import API from '../../utils/API.tsx';
+import messageHandler from '../../utils/messageHandler';
 import {
   setUserInfo,
   logout,
-} from '../../actions/auth'
+} from '../../actions/auth';
 // import AddCardModal from './AddCardModal';
-import EditCardContentModal from './EditCardContentModal'
+import EditCardContentModal from './EditCardContentModal';
+import ChangePasswordModal from '../login/ChangePasswordModal';
+import AddMapMemberModal from './AddMapMemberModal'
+
 const VIEW_TYPE_NAME = [
   { icon: '#F5DD0C', text: '待开始' },
   { icon: '#66B966', text: '进行中' },
@@ -31,14 +34,19 @@ class StoryMap extends Component {
           showAddModal: false, //编辑内容
           // addCardModal: null, //1是列表，2是泳道
           showStateSelector: -1, //改变状态
+          showChangePsw: false, //修改密码
+          hovered: false,
+          memberHovered: false,
+          memberList: [], //地图成员列表
+          showAddMemberModal: false,
         };
       }
       componentDidMount(){
           this.fetchMapList()
+          this.fetchMember()
       }
       fetchMapList = () => {
         const { match, location, history } = this.props
-        console.log(match)
         var getInformation ={
           method:"GET",
           headers:{
@@ -47,11 +55,32 @@ class StoryMap extends Component {
           token: this.state.token,
           },
           }
-          fetch(`http://119.23.29.56:2228/card/list?mapId=${match.params.id}`,getInformation)
+          fetch(`http://172.19.240.118:8002/card/list?mapId=${match.params.id}`,getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
               this.setState({ cardList: json.data })
+            }
+            else {
+              message.error(json.data);
+            }
+          })
+      }
+      fetchMember = () => {
+        const { match, location, history } = this.props
+        var getInformation ={
+          method:"POST",
+          headers:{
+          "Content-Type":"application/json",
+          userId: this.state.userId,
+          token: this.state.token,
+          },
+          }
+          fetch(`http://172.19.240.118:8002/member/members?mapId=${match.params.id}`,getInformation)
+          .then(response => response.json())
+          .then(json =>{
+            if(json.code === 0){
+              this.setState({ memberList: json.data })
             }
             else {
               message.error(json.data);
@@ -92,7 +121,7 @@ class StoryMap extends Component {
              numberOfCards: cardList.length === 0 ? 1 : cardList[0].vos.length
            }),
            }
-           fetch("http://119.23.29.56:2228/card/create_list",getInformation)
+           fetch("http://172.19.240.118:8002/card/create_list",getInformation)
            .then(response => response.json())
            .then(json =>{
              if(json.code === 0){
@@ -120,7 +149,7 @@ class StoryMap extends Component {
             numberOfCards: cardList.length === 0 ? 1 : cardList.length
           }),
           }
-          fetch("http://119.23.29.56:2228/card/create_lane",getInformation)
+          fetch("http://172.19.240.118:8002/card/create_lane",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
@@ -146,7 +175,7 @@ class StoryMap extends Component {
           },
           body:JSON.stringify({ cardId: vos.id, state: v }),
           }
-        fetch("http://119.23.29.56:2228/card/modify_state",getInformation)
+        fetch("http://172.19.240.118:8002/card/modify_state",getInformation)
         .then(response => response.json())
         .then(json =>{
           if(json.code === 0){
@@ -173,7 +202,7 @@ class StoryMap extends Component {
           token: this.state.token,
           },
           }
-          fetch("http://119.23.29.56:2228/user/logout",getInformation)
+          fetch("http://172.19.240.118:8002/user/logout",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
@@ -185,11 +214,68 @@ class StoryMap extends Component {
             }
           })
       }
+      handleHoverChange = () => {
+        this.setState({ hovered: !this.state.hovered })
+      }
+      handleMemberHoverChange = () => {
+        this.setState({ memberHovered: !this.state.memberHovered })
+      }
+      handleDeleteMapMember = (email) => {
+        var getInformation ={
+          method:"POST",
+          headers:{
+          "Content-Type":"application/json",
+          userId: this.state.userId,
+          token: this.state.token,
+          },
+          body: JSON.stringify({
+            beOperatedEmail: email,
+            mapId: this.props.match.params.id,
+            operatorId: this.state.userId,
+          }),
+          }
+          fetch("http://172.19.240.118:8002/member/remove_member",getInformation)
+          .then(response => response.json())
+          .then(json =>{
+            if(json.code === 0){
+              message.success('删除成员成功');
+              this.fetchMember()
+            }
+            else {
+              message.error(json.data);
+            }
+          })
+      }
       render(){
           const { history } = this.props
-          const { cardList, showAddModal, mapStoryCard, showStateSelector } = this.state
-
-          console.log(cardList)
+          const { showAddMemberModal, memberList, cardList, showAddModal, mapStoryCard, showStateSelector, showChangePsw, userId } = this.state
+          const content = (
+            <React.Fragment>
+              <span className={styles.homeLogoutBtn} onClick={() => this.setState({ hovered: false, showAddMemberModal: true })}>
+                添加成员
+              </span>
+              {/* <span className={styles.homeLogoutBtn} onClick={() => this.setState({ showDeleteMemberModal: true })}>
+                移除成员
+              </span> */}
+              <span className={styles.homeLogoutBtn} onClick={() => this.setState({ hovered: false, showChangePsw: true })}>
+                修改密码
+              </span>
+              <span className={styles.homeLogoutBtn} onClick={() => {this.setState({ hovered: false });this.logoutUser()}}>
+                退出登录
+              </span>
+            </React.Fragment>
+          )
+          const memberContent = (
+                memberList.length > 0 &&
+                memberList.map((member) => { 
+                  return (
+                  <div key={member.userId} className={styles.homeMember} >
+                    {member.username}
+                    {member.userId !== userId && <Icon type="delete" theme="twoTone" onClick={() => {this.setState({ memberHovered: false });this.handleDeleteMapMember(member.email)}}/>}
+                  </div>
+                  )
+                })
+          )
           return (
             <div className={styles.storyContainer}>
               <div className={styles.homeTop}>
@@ -199,10 +285,17 @@ class StoryMap extends Component {
                   </Button>
                 </div>
                 <div>
-                  <PandaSvg className={styles.homeLogoutSvg}/>
-                  <Button className={styles.homeLogoutBtn} onClick={() => this.logoutUser()}>
-                    退出登录
-                  </Button>
+                  <Tooltip title="成员列表" placement="leftBottom">
+                  <Popover placement="bottom" content={memberContent} trigger="click" visible={this.state.memberHovered}  onVisibleChange={this.handleMemberHoverChange}>
+                    <PandaSvg className={styles.homeLogoutSvg}/>
+                  </Popover>
+                  </Tooltip>
+
+                  <Popover placement="bottom" content={content} trigger="click" visible={this.state.hovered}
+                    onVisibleChange={this.handleHoverChange}
+                  >
+                    <Button>用户操作</Button>
+                  </Popover>
                 </div>
 
               </div>
@@ -236,7 +329,7 @@ class StoryMap extends Component {
                                     <Popover
                                       overlayClassName={styles.selector}
                                       content={contentType()}
-                                      visible={showStateSelector === vos.id}
+                                      visible={this.state.showStateSelector === vos.id}
                                       trigger="click"
                                       placement="bottom"
                                       onVisibleChange={(visible) => this.handleTypeVisibleChange(visible, vos.id)}
@@ -249,7 +342,15 @@ class StoryMap extends Component {
                                     </Popover>
                                   </div>
                                   <div className={styles.homeCardItemContent} style={{ color: vos.content ? '#4a4a4a' : '#7CB2F1' }}>
-                                    {vos.content ? vos.content : '请输入卡片内容'}
+                                    <span>
+                                      {vos.content ? vos.content : '请输入卡片内容'}
+                                    </span>
+                                    <div>
+                                      <Tooltip title={`负责人：${vos.ownerUser.username}`} placement="top">
+                                        <Icon type="github" theme="filled" />
+                                      </Tooltip>
+                                      <EditNameIcon className={styles.homeCardItemContentSvg} onClick={() => this.setState({ showModifyCardModal: true, mapStoryCard: vos })}/>
+                                    </div>
                                   </div>
                               </div>
                             )
@@ -300,6 +401,20 @@ class StoryMap extends Component {
                   onCancel={() => this.setState({ showAddModal: false })}
                   fetchMapList={this.fetchMapList}
                   mapId={this.props.match.params.id}
+                  />
+              }
+              {
+                showChangePsw &&
+                <ChangePasswordModal
+                  onCancel={() => this.setState({ showChangePsw: false })}
+                  />
+              }
+              {
+                showAddMemberModal &&
+                <AddMapMemberModal
+                  mapId={this.props.match.params.id}
+                  onCancel={() => this.setState({ showAddMemberModal: false })}
+                  onRefersh={this.fetchMember}
                   />
               }
             </div>

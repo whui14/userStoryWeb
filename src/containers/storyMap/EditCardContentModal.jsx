@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { message, Button,Modal,Form,Input } from 'antd'
+import { log } from 'util';
 const FormItem = Form.Item
 
 class EditCardContentModal extends Component {
@@ -17,7 +18,7 @@ class EditCardContentModal extends Component {
       if (err) {
         return
       }
-        if((Boolean(mapStoryCard.title) != Boolean(value.name)) && (mapStoryCard.title != value.name)){
+        if(mapStoryCard.title != value.name){
           var getInformation ={
             method:"POST",
             headers:{
@@ -27,7 +28,7 @@ class EditCardContentModal extends Component {
             },
             body:JSON.stringify({ cardId: mapStoryCard.id, title: value.name }),
             }
-          fetch("http://119.23.29.56:2228/card/modify_title",getInformation)
+          fetch("http://172.19.240.118:8002/card/modify_title",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
@@ -41,7 +42,7 @@ class EditCardContentModal extends Component {
           })
         }
 
-        if((Boolean(mapStoryCard.content) != Boolean(value.content)) && (mapStoryCard.content != value.content)){
+        if(mapStoryCard.content != value.content){
           var getInformation ={
             method:"POST",
             headers:{
@@ -51,7 +52,7 @@ class EditCardContentModal extends Component {
             },
             body:JSON.stringify({ cardId: mapStoryCard.id, content: value.content }),
             }
-          fetch("http://119.23.29.56:2228/card/modify_content",getInformation)
+          fetch("http://172.19.240.118:8002/card/modify_content",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
@@ -64,7 +65,7 @@ class EditCardContentModal extends Component {
             }
           })
         }
-
+        this.props.onCancel()
     })
   }
   handleCancel = () => {
@@ -100,8 +101,8 @@ class EditCardContentModal extends Component {
               //   message: '请输入卡片标题'
               // },
               {
-                max: 10,
-                message: '标题不能超过10位'
+                max:9,
+                message: '标题不能超过9位'
               }]
             })(
               <Input placeholder="请输入卡片标题" />

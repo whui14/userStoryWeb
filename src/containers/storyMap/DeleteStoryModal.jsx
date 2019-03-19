@@ -19,7 +19,7 @@ class DeleteStoryModal extends Component {
         token: this.state.token,
         },
         }
-          fetch(`http://119.23.29.56:2228/map/delete?mapId=${mapStory.id}`,getInformation)
+          fetch(`http://172.19.240.118:8002/map/delete?mapId=${mapStory.id}`,getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){

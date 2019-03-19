@@ -1,3 +1,15 @@
+.ant-popover-inner-content{
+  padding: 5px 16px;
+  :local(.homeLogoutBtn){
+    display: block;
+    margin-bottom: 5px;
+    cursor: pointer;
+    color: #4a4a4a;
+    &:hover,&:active{
+      color: #926dea;
+    }
+  }
+}
 :local(.homeContainer){
   height: 100%;
   :local(.homeTop){
@@ -14,10 +26,6 @@
       position: relative;
       top: 5px;
     }
-    :local(.homeLogoutBtn){
-      margin-left: 10px;
-      color: #926dea;
-    }
   }
   :local(.homeContentDetail){
     padding: 7px 15px;
@@ -25,7 +33,6 @@
       display: inline-block;
       background-color: aliceblue;
       margin-right: 15px;
-      border-radius: 8px;
       width: 150px;
       height: 100px;
       border: 1px solid #7CB2F1;
