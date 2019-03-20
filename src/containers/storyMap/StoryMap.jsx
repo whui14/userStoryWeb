@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
-import data from './data.json';
-import StoryCard from './StoryCard';
 import styles from './StoryMap.scss';
-import { PandaSvg, EditNameIcon } from '../../images/svg';
+import { PandaSvg } from '../../images/svg';
 import { fromJS } from 'immutable';
 import { withRouter } from 'react-router';
 import { message, Button, Popover, Icon, Tooltip } from 'antd';
-import { pushURL } from '../../actions/route';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import API from '../../utils/API.tsx';
-import messageHandler from '../../utils/messageHandler';
 import {
   setUserInfo,
   logout,
@@ -18,13 +13,12 @@ import {
 // import AddCardModal from './AddCardModal';
 import EditCardContentModal from './EditCardContentModal';
 import ChangePasswordModal from '../login/ChangePasswordModal';
-import AddMapMemberModal from './AddMapMemberModal'
+import AddMapMemberModal from './AddMapMemberModal';
+import EditCardMemberModal from './EditCardMemberModal';
+import {DragDropContext} from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
+import StoryCard from './StoryCard';
 
-const VIEW_TYPE_NAME = [
-  { icon: '#F5DD0C', text: '待开始' },
-  { icon: '#66B966', text: '进行中' },
-  { icon: '#F45B6C', text: '已完成' },
-]
 class StoryMap extends Component {
     constructor(props) {
         super(props);
@@ -33,12 +27,12 @@ class StoryMap extends Component {
           token: localStorage.getItem('token'),
           showAddModal: false, //编辑内容
           // addCardModal: null, //1是列表，2是泳道
-          showStateSelector: -1, //改变状态
           showChangePsw: false, //修改密码
           hovered: false,
           memberHovered: false,
           memberList: [], //地图成员列表
-          showAddMemberModal: false,
+          showAddMemberModal: false, //添加地图成员
+          showModifyCardModal: false, //修改卡片负责人
         };
       }
       componentDidMount(){
@@ -87,24 +81,7 @@ class StoryMap extends Component {
             }
           })
       }
-      onDataChange = (e) => {
-          console.log('datachange',e)
-      }
-      onCardDelete= (e) => {
-          console.log('delete',e)
-      }
-      onCardAdd= (e) => {
-          console.log('add',e)
-      }
-      onCardClick= (e) => {
-          console.log('click',e)
-      }
-      handleLaneDragEnd = (laneId, newPosition, payload) => {
-          console.log('lanedrag',laneId, newPosition, payload)
-      }
-      handleDragEnd = (cardId, sourceLaneId, targetLaneId, position, cardDetails) => {
-          console.log('drag',cardId, sourceLaneId, targetLaneId, position, cardDetails)
-      }
+
       //添加列表
       addCardList = () => {
          const { cardList } = this.state
@@ -162,37 +139,6 @@ class StoryMap extends Component {
           })
       }
 
-      handleChangeState = (v, vos) => {
-        this.setState({
-          showStateSelector: -1
-        })
-        var getInformation ={
-          method:"POST",
-          headers:{
-          "Content-Type":"application/json",
-          userId: this.state.userId,
-          token: this.state.token,
-          },
-          body:JSON.stringify({ cardId: vos.id, state: v }),
-          }
-        fetch("http://172.19.240.118:8002/card/modify_state",getInformation)
-        .then(response => response.json())
-        .then(json =>{
-          if(json.code === 0){
-            message.success('编辑状态成功');
-            this.fetchMapList()
-          }
-          else {
-            message.error(json.data);
-          }
-        })
-      }
-      handleTypeVisibleChange = (visible, key) => {
-        console.log(key, visible)
-        this.setState({
-          showStateSelector: visible ? key : -1
-        })
-      }
       logoutUser = () => {
         const { history } = this.props
         var getInformation ={
@@ -246,9 +192,10 @@ class StoryMap extends Component {
             }
           })
       }
+
       render(){
           const { history } = this.props
-          const { showAddMemberModal, memberList, cardList, showAddModal, mapStoryCard, showStateSelector, showChangePsw, userId } = this.state
+          const { showModifyCardModal, showAddMemberModal, memberList, cardList, showAddModal, mapStoryCard, showStateSelector, showChangePsw, userId } = this.state
           const content = (
             <React.Fragment>
               <span className={styles.homeLogoutBtn} onClick={() => this.setState({ hovered: false, showAddMemberModal: true })}>
@@ -301,99 +248,16 @@ class StoryMap extends Component {
               </div>
               <div className={styles.homeContent}>
                 <div className={styles.homeContentTop}>
-                  {cardList && cardList.map((card, index) => {
-                    return (
-                      <div className={styles.homeCard} key={index}>
-                        <div className={styles.homeCardTitle} style={{ color: card.title ? '#4a4a4a' : '#7CB2F1' }}>
-                          {card.title ? card.title : '请输入标题'}<EditNameIcon onClick={() => this.setState({ showAddModal: true, mapStoryCard: card.vos[0] })}/>
-                        </div>
-                        {
-                          card.vos.map((vos) => {
-                            const contentType = () => (
-                              VIEW_TYPE_NAME.map((v, k) => {
-                                  return (
-                                    <div className={styles.defaultValue} key={k} onClick={() => this.handleChangeState(k, vos)}>
-                                      <span className={styles.dot} style={{ backgroundColor: VIEW_TYPE_NAME[k].icon }}/>
-                                      <span className={styles.text}>{VIEW_TYPE_NAME[k].text}</span>
-                                    </div>
-                                )
-                              })
-                            )
-                            console.log(showStateSelector === vos.id)
-                            return(
-                              <div className={styles.homeCardItem} key={vos.id}>
-                                  <div className={styles.homeCardItemTitle}>
-                                    <span style={{ color: vos.title ? '#4a4a4a' : '#7CB2F1' }}>
-                                      {vos.title ? vos.title : '请输入卡片标题'}<EditNameIcon onClick={() => this.setState({ showAddModal: true, mapStoryCard: vos })} style={{ display: vos.state !== 0 && 'none' }}/>
-                                    </span>
-                                    <Popover
-                                      overlayClassName={styles.selector}
-                                      content={contentType()}
-                                      visible={this.state.showStateSelector === vos.id}
-                                      trigger="click"
-                                      placement="bottom"
-                                      onVisibleChange={(visible) => this.handleTypeVisibleChange(visible, vos.id)}
-                                    >
-                                      <span className={styles.defaultValue}>
-                                        <span className={styles.dot} style={{ backgroundColor: VIEW_TYPE_NAME[vos.state].icon }}/>
-                                        <span className={styles.text} style={{ color: VIEW_TYPE_NAME[vos.state].icon }}>{VIEW_TYPE_NAME[vos.state].text}</span>
-                                        <Icon type="caret-down" />
-                                      </span>
-                                    </Popover>
-                                  </div>
-                                  <div className={styles.homeCardItemContent} style={{ color: vos.content ? '#4a4a4a' : '#7CB2F1' }}>
-                                    <span>
-                                      {vos.content ? vos.content : '请输入卡片内容'}
-                                    </span>
-                                    <div>
-                                      <Tooltip title={`负责人：${vos.ownerUser.username}`} placement="top">
-                                        <Icon type="github" theme="filled" />
-                                      </Tooltip>
-                                      <EditNameIcon className={styles.homeCardItemContentSvg} onClick={() => this.setState({ showModifyCardModal: true, mapStoryCard: vos })}/>
-                                    </div>
-                                  </div>
-                              </div>
-                            )
-                          })
-                        }
-                      </div>
-                    )
-                  })
-                  }
-                  {/* <Board data={data}
-                    style={{ background: '#ffffff', display: 'inline-block', height: 'auto' }}
-                    customCardLayout
-                    addCardLink = "添加"
-                      onDataChange={this.onDataChange}
-                      onCardDelete={this.onCardDelete}
-                      onCardAdd={this.onCardAdd}
-                      onCardClick={this.onCardClick}
-                      handleLaneDragEnd={this.handleLaneDragEnd}
-                      handleDragEnd={this.handleDragEnd}
-                      canAddLanes
-                      editable
-                      draggable> */}
-                      {/* <StoryCard cardColor='#eee'
-                      name='笑话'
-                      dueOn='nizaigansha'
-                      subTitle='xiao'
-                      body='说点啥'
-                      escalationText='这是啥'
-                      /> */}
-                  {/* </Board> */}
+                  <StoryCard
+                    cardList={cardList}
+                    handleAddModal={(mapStoryCard) => this.setState({ showAddModal: true, mapStoryCard: mapStoryCard })}
+                    handleEditModal={(mapStoryCard) => this.setState({ showModifyCardModal:true, mapStoryCard: mapStoryCard })}
+                    fetchMapList={this.fetchMapList}
+                  />
                   <Button className={styles.homeContentAddCol} onClick={() => this.addCardList()}>+ 添加列表</Button>
                 </div>
                 <Button className={styles.homeContentAddRow} onClick={() => this.addCardLane()}>+ 添加泳道</Button>
               </div>
-              {/* {
-                addCardModal &&
-                <AddCardModal
-                  type={addCardModal}
-                  onCancel={() => this.setState({ addCardModal: null })}
-                  fetchMapList={this.fetchMapList}
-                  mapId={this.props.match.params.id}
-                  />
-              } */}
               {
                 showAddModal &&
                 <EditCardContentModal
@@ -417,6 +281,15 @@ class StoryMap extends Component {
                   onRefersh={this.fetchMember}
                   />
               }
+              {
+                showModifyCardModal &&
+                <EditCardMemberModal
+                  mapStoryCard={mapStoryCard}
+                  memberList={memberList}
+                  onCancel={() => this.setState({ showModifyCardModal: false })}
+                  onRefersh={this.fetchMapList}
+                  />
+              }
             </div>
           )
       }
@@ -434,4 +307,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(StoryMap))
+export default DragDropContext(HTML5Backend)(connect(mapStateToProps, mapDispatchToProps)(withRouter(StoryMap)))

@@ -76,10 +76,10 @@ class EditCardContentModal extends Component {
     const { getFieldDecorator } = this.props.form
     const formItemLayout = {
       labelCol: {
-        span: 4
+        span: 5
       },
       wrapperCol: {
-        span: 16
+        span: 15
       }
     }
     return(
