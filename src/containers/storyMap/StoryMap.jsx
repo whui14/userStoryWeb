@@ -15,9 +15,10 @@ import EditCardContentModal from './EditCardContentModal';
 import ChangePasswordModal from '../login/ChangePasswordModal';
 import AddMapMemberModal from './AddMapMemberModal';
 import EditCardMemberModal from './EditCardMemberModal';
-import {DragDropContext} from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
+import {DragDropContext} from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import StoryCard from './StoryCard';
+import MoveCardModal from './MoveCardModal';
 
 class StoryMap extends Component {
     constructor(props) {
@@ -33,6 +34,7 @@ class StoryMap extends Component {
           memberList: [], //地图成员列表
           showAddMemberModal: false, //添加地图成员
           showModifyCardModal: false, //修改卡片负责人
+          showMoveModal: false, //移动位置
         };
       }
       componentDidMount(){
@@ -195,7 +197,7 @@ class StoryMap extends Component {
 
       render(){
           const { history } = this.props
-          const { showModifyCardModal, showAddMemberModal, memberList, cardList, showAddModal, mapStoryCard, showStateSelector, showChangePsw, userId } = this.state
+          const { showMoveModal, showModifyCardModal, showAddMemberModal, memberList, cardList, showAddModal, mapStoryCard, showStateSelector, showChangePsw, userId } = this.state
           const content = (
             <React.Fragment>
               <span className={styles.homeLogoutBtn} onClick={() => this.setState({ hovered: false, showAddMemberModal: true })}>
@@ -223,6 +225,8 @@ class StoryMap extends Component {
                   )
                 })
           )
+          console.log(showMoveModal)
+          
           return (
             <div className={styles.storyContainer}>
               <div className={styles.homeTop}>
@@ -253,6 +257,7 @@ class StoryMap extends Component {
                     handleAddModal={(mapStoryCard) => this.setState({ showAddModal: true, mapStoryCard: mapStoryCard })}
                     handleEditModal={(mapStoryCard) => this.setState({ showModifyCardModal:true, mapStoryCard: mapStoryCard })}
                     fetchMapList={this.fetchMapList}
+                    handleRemoveModal={(mapStoryCard) => this.setState({ showMoveModal:true, mapStoryCard: mapStoryCard })}
                   />
                   <Button className={styles.homeContentAddCol} onClick={() => this.addCardList()}>+ 添加列表</Button>
                 </div>
@@ -289,6 +294,15 @@ class StoryMap extends Component {
                   onCancel={() => this.setState({ showModifyCardModal: false })}
                   onRefersh={this.fetchMapList}
                   />
+              }
+              {
+                showMoveModal &&
+                <MoveCardModal
+                  mapStoryCard={mapStoryCard}
+                  cardList={cardList}
+                  onCancel={() => this.setState({ showMoveModal: false })}
+                  onRefersh={this.fetchMapList}
+                />
               }
             </div>
           )

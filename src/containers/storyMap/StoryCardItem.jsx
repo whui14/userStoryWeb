@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { findDomNode } from 'react-dom';
 import styles from './StoryMap.scss';
-import { EditNameIcon } from '../../images/svg';
+import { EditNameIcon, MoveIcon } from '../../images/svg';
 import { message, Button, Popover, Icon, Tooltip, Card } from 'antd';
 import { //引入react-dnd
     DragSource,
@@ -114,6 +114,7 @@ class StoryCardItem extends Component {
                                 handleAddModal={this.props.handleAddModal}
                                 handleEditModal={this.props.handleEditModal}
                                 fetchMapList={this.props.fetchMapList}
+                                handleRemoveModal={this.props.handleRemoveModal}
                             />
                             </div>
                             )
@@ -215,6 +216,7 @@ class Cardlal extends Component {
                         <Icon type="github" theme="filled" />
                     </Tooltip>
                     <EditNameIcon className={styles.homeCardItemContentSvg} onClick={() => this.props.handleEditModal(vos)}/>
+                    <MoveIcon className={styles.homeCardItemContentMoveSvg} onClick={() => this.props.handleRemoveModal(vos)}/>
                     </div>
                 </div>
             </div>

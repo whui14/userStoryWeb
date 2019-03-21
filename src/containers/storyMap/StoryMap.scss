@@ -124,6 +124,18 @@
                 fill: #926dea;
               }
             }
+            :local(.homeCardItemContentMoveSvg){
+              cursor: pointer;
+              height: 10px;
+              width: 10px;
+              margin-left: 2px;
+              fill: #ccc;
+              position: relative;
+              top: 3px;
+              &:hover{
+                fill: #926dea;
+              }
+            }
           }
         }
       }

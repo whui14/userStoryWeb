@@ -35,6 +35,7 @@ export default class StoryCard extends Component {
                         index={index}
                         handleAddModal={this.props.handleAddModal}
                         handleEditModal={this.props.handleEditModal}
+                        handleRemoveModal={this.props.handleRemoveModal}
                         fetchMapList={this.props.fetchMapList}
                     />
                     )
