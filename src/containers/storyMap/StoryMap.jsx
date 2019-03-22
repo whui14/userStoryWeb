@@ -55,7 +55,19 @@ class StoryMap extends Component {
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
-              this.setState({ cardList: json.data })
+              function compare(property){
+                return function(a,b){
+                    var value1 = a[property];
+                    var value2 = b[property];
+                    return value1 - value2;
+                }
+            }
+              let cardList = json.data.map((card) => {
+                 card.vos.sort(compare('yaxis'))
+                 return card
+              })
+              console.log(cardList)
+              this.setState({ cardList })
             }
             else {
               message.error(json.data);

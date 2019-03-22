@@ -93,7 +93,7 @@ function collect1(connect,monitor) {//同DragSource的collect函数
 class StoryCardItem extends Component {
     render(){
         const { card,index } = this.props
-          
+
         return (
             <div className={styles.homeCard} key={index}>
               <div className={styles.homeCardTitle} style={{ color: card.title ? '#4a4a4a' : '#7CB2F1' }}>
@@ -103,7 +103,7 @@ class StoryCardItem extends Component {
                 card.vos.map((vos) => {
                     const { isDragging, connectDragSource, connectDropTarget} = this.props;
                     let opacity = isDragging ? 0.1 : 1; //当被拖拽时呈现透明效果
-            
+
                     return connectDragSource( //使用DragSource 和 DropTarget
                         connectDropTarget(
                         <div key={vos.id}>
