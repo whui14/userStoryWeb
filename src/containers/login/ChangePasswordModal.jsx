@@ -28,8 +28,8 @@ class ChangePasswordModal extends Component {
           oldPassword: value.oldPsw
         }),
         }       
-          fetch("http://172.19.240.118:8002/user/modidy_password",getInformation)
-          // fetch("http://119.23.29.56:2228/user/modidy_password",getInformation)
+          fetch("http://172.19.240.118:8002/user/modify_password",getInformation)
+          // fetch("http://119.23.29.56:2228/user/modify_password",getInformation)
           .then(response => response.json())
           .then(json =>{
             if(json.code === 0){
