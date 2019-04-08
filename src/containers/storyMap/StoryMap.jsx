@@ -15,8 +15,8 @@ import EditCardContentModal from './EditCardContentModal';
 import ChangePasswordModal from '../login/ChangePasswordModal';
 import AddMapMemberModal from './AddMapMemberModal';
 import EditCardMemberModal from './EditCardMemberModal';
-import {DragDropContext} from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+// import {DragDropContext} from 'react-dnd';
+// import HTML5Backend from 'react-dnd-html5-backend';
 import StoryCard from './StoryCard';
 import MoveCardModal from './MoveCardModal';
 
@@ -333,4 +333,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default DragDropContext(HTML5Backend)(connect(mapStateToProps, mapDispatchToProps)(withRouter(StoryMap)))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(StoryMap))
