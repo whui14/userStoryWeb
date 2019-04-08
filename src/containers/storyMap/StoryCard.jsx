@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import StoryCardItem from './StoryCardItem'
-import { log } from 'util';
 export default class StoryCard extends Component {
     constructor(props){
         super(props)

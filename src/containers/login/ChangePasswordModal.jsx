@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { message, Button,Modal,Form,Input } from 'antd'
+import { message, Modal,Form,Input } from 'antd'
 const FormItem = Form.Item
 class ChangePasswordModal extends Component {
   constructor(props) {
