@@ -127,11 +127,11 @@ class StoryCardItem extends Component {
 }
 
 // 使组件连接DragSource和DropTarget
-let flow = require('lodash.flow');
-export default flow(
-    DragSource(Types.CARD,CardSource,collect),
-    DropTarget(Types.CARD,CardTarget,collect1)
-)(StoryCardItem)
+// let flow = require('lodash.flow');
+// export default flow(
+//     DragSource(Types.CARD,CardSource,collect),
+//     DropTarget(Types.CARD,CardTarget,collect1)
+// )(StoryCardItem)
 
 
 class Cardlal extends Component {
